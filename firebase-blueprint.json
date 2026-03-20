@@ -1,0 +1,113 @@
+{
+  "entities": {
+    "user": {
+      "title": "User",
+      "description": "Represents a user of the SMM panel.",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string", "description": "The unique ID of the user." },
+        "email": { "type": "string", "format": "email", "description": "The user's email address." },
+        "role": { "type": "string", "enum": ["user", "admin"], "description": "The user's role." },
+        "balance": { "type": "number", "description": "The user's current balance." }
+      },
+      "required": ["uid", "email", "role"]
+    },
+    "service": {
+      "title": "Service",
+      "description": "Represents a social media marketing service.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "description": "The unique ID of the service." },
+        "platform": { "type": "string", "description": "The platform (e.g., Instagram, TikTok)." },
+        "name": { "type": "string", "description": "The name of the service." },
+        "price": { "type": "number", "description": "The price per 1000 units." },
+        "min": { "type": "string", "description": "Minimum order quantity." },
+        "max": { "type": "string", "description": "Maximum order quantity." },
+        "imageUrl": { "type": "string", "description": "The image URL for the service." }
+      },
+      "required": ["id", "platform", "name", "price"]
+    },
+    "order": {
+      "title": "Order",
+      "description": "Represents a user's order for an SMM service.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "description": "The unique ID of the order." },
+        "uid": { "type": "string", "description": "The ID of the user who placed the order." },
+        "serviceId": { "type": "string", "description": "The ID of the service ordered." },
+        "serviceName": { "type": "string", "description": "The name of the service ordered." },
+        "quantity": { "type": "number", "description": "The quantity ordered." },
+        "totalPrice": { "type": "number", "description": "The total price of the order." },
+        "status": { "type": "string", "enum": ["pending", "completed", "cancelled"], "description": "The status of the order." },
+        "createdAt": { "type": "string", "format": "date-time", "description": "When the order was created." }
+      },
+      "required": ["id", "uid", "serviceId", "quantity", "totalPrice", "status", "createdAt"]
+    },
+    "ticket": {
+      "title": "Ticket",
+      "description": "Represents a support ticket created by a user.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "description": "The unique ID of the ticket." },
+        "uid": { "type": "string", "description": "The ID of the user who created the ticket." },
+        "email": { "type": "string", "description": "The email of the user who created the ticket." },
+        "subject": { "type": "string", "description": "The subject of the ticket." },
+        "message": { "type": "string", "description": "The initial message of the ticket." },
+        "screenshot": { "type": "string", "description": "Base64 encoded screenshot (optional)." },
+        "status": { "type": "string", "enum": ["open", "replied", "closed"], "description": "The status of the ticket." },
+        "createdAt": { "type": "string", "format": "date-time", "description": "When the ticket was created." },
+        "replies": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "uid": { "type": "string", "description": "The ID of the user who replied." },
+              "role": { "type": "string", "enum": ["user", "admin"], "description": "The role of the replier." },
+              "message": { "type": "string", "description": "The reply message." },
+              "createdAt": { "type": "string", "format": "date-time", "description": "When the reply was sent." }
+            }
+          }
+        }
+      },
+      "required": ["id", "uid", "email", "subject", "message", "status", "createdAt"]
+    },
+    "payment_request": {
+      "title": "Payment Request",
+      "description": "Represents a user's request to add funds with proof of payment.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "description": "The unique ID of the request." },
+        "uid": { "type": "string", "description": "The ID of the user who made the request." },
+        "email": { "type": "string", "description": "The email of the user." },
+        "amount": { "type": "number", "description": "The amount of funds to add." },
+        "method": { "type": "string", "enum": ["paypal", "crypto"], "description": "The payment method used." },
+        "screenshot": { "type": "string", "description": "Base64 encoded screenshot of the payment proof." },
+        "status": { "type": "string", "enum": ["pending", "approved", "rejected"], "description": "The status of the request." },
+        "createdAt": { "type": "string", "format": "date-time", "description": "When the request was created." }
+      },
+      "required": ["id", "uid", "email", "amount", "method", "screenshot", "status", "createdAt"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": "user",
+      "description": "Stores user profiles and roles."
+    },
+    "/services/{serviceId}": {
+      "schema": "service",
+      "description": "Stores the list of available SMM services."
+    },
+    "/orders/{orderId}": {
+      "schema": "order",
+      "description": "Stores the list of user orders."
+    },
+    "/tickets/{ticketId}": {
+      "schema": "ticket",
+      "description": "Stores support tickets and replies."
+    },
+    "/payment_requests/{requestId}": {
+      "schema": "payment_request",
+      "description": "Stores user payment requests and proofs."
+    }
+  }
+}
